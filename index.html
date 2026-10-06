@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TaskPilot AI – Smart Task &amp; Role Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--br:#3d2408;--br2:#5a3a12;--cr:#faf6f1;--card:#fff;--ink:#2b1a07;--mute:#8a7a68;--line:#e8dfd2;--amb:#c47f0a;--red:#d6212b;--pink:#fde8ea;--grn:#12945f;--blu:#2563eb;--sand:#f8e9d3;--pg:#d9d2c7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cr:#17110a;--card:#221a10;--ink:#f3e9da;--mute:#b3a48f;--line:#3a2d1c;--sand:#3a2a14;--pink:#3b1a1d;--pg:#0b0804;--amb:#e6a02a}}
+:root[data-theme="dark"]{--cr:#17110a;--card:#221a10;--ink:#f3e9da;--mute:#b3a48f;--line:#3a2d1c;--sand:#3a2a14;--pink:#3b1a1d;--pg:#0b0804;--amb:#e6a02a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;min-height:100%}body{background:var(--pg);font:15px/1.45 "Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1fr 430px;gap:32px;align-items:start}
+@media(max-width:920px){.wrap{grid-template-columns:1fr}}
+#ph{height:min(840px,calc(100dvh - 32px));min-height:640px;background:var(--cr);display:flex;flex-direction:column;position:sticky;top:16px;overflow:hidden;border-radius:34px;box-shadow:0 20px 60px #0005;border:6px solid #1d1209}
+@media(max-width:920px){#ph{position:relative;top:0;order:-1}}
+.pitch h1{font-size:40px;line-height:1.1;margin:0 0 8px;letter-spacing:-.03em}.pitch .sub{font-size:17px;color:var(--mute);margin:0 0 18px;max-width:560px}
+.pitch h2{font-size:18px;margin:22px 0 8px}.pitch p,.pitch li{max-width:620px}.pitch ul{padding-left:20px;margin:0}
+.badge{display:inline-block;background:var(--br);color:#fff;border-radius:99px;padding:5px 14px;font-weight:700;font-size:13px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.g3>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px}.g3 b{display:block;margin-bottom:4px}
+.steps{display:grid;gap:8px;max-width:620px}.steps button{text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font:600 14px inherit;font-family:inherit;cursor:pointer}.steps button:hover{border-color:var(--amb)}.steps button:focus-visible{outline:2px solid var(--amb)}
+.steps span{color:var(--amb);font-weight:800;margin-right:8px}
+.chip{display:inline-block;background:var(--sand);border-radius:99px;padding:4px 12px;margin:0 6px 6px 0;font-size:13px;font-weight:600}
+header{background:var(--br);color:#fff;padding:14px 16px 16px;border-radius:0 0 26px 26px;display:flex;align-items:center;gap:10px}
+header .t{flex:1;min-width:0}header b{display:block;font-size:19px;line-height:1.2}header small{color:#e8d7bd;font-weight:600}
+.av{width:44px;height:44px;border-radius:50%;background:var(--cr);color:var(--br);font-weight:800;display:grid;place-items:center;font-size:20px;flex:none}
+.ib{background:none;border:0;color:#fff;font-size:20px;padding:6px;cursor:pointer;position:relative}
+.bd{position:absolute;top:0;right:-2px;background:var(--red);font-size:11px;border-radius:99px;min-width:17px;height:17px;display:grid;place-items:center;font-weight:700}
+main{flex:1;overflow-y:auto;padding:14px 16px 20px}
+nav{display:flex;background:var(--br);padding:8px 10px}
+nav button{flex:1;background:none;border:0;color:#e8d7bd;font:600 12px inherit;padding:8px;border-radius:99px;cursor:pointer;display:grid;gap:2px;justify-items:center;font-family:inherit}
+nav button span{font-size:19px}nav button.on{background:var(--br2);color:#ffc65a}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}
+h2{font-size:18px;margin:6px 0 10px}h3{margin:0 0 8px;font-size:16px}
+.row{display:flex;gap:10px;align-items:center}.sp{justify-content:space-between}
+.mute{color:var(--mute);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:center;padding:10px 2px}.st b{display:block;font-size:24px}.st span{font-size:11px;color:var(--mute)}
+.pill{padding:3px 12px;border-radius:99px;font-size:12px;font-weight:800;display:inline-block}
+.Pending{background:var(--pink);color:var(--red)}.InProgress{background:#dbeafe;color:var(--blu)}.Submitted{background:#ede9fe;color:#6d28d9}.Completed{background:#d1fae5;color:var(--grn)}
+.alert{background:var(--pink);border:1px solid #f5b5bb;border-radius:18px;padding:12px;margin-bottom:12px;cursor:pointer;color:var(--red)}
+.ai{background:linear-gradient(135deg,#fff2cf,#ffe39a);color:#3b2a00;border-radius:18px;padding:13px;margin-bottom:12px;border:1px solid #f0c75a}
+.ai b{display:block}.ai button{margin-top:8px}
+.donut{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;flex:none}.donut i{width:70px;height:70px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:22px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.btn{background:var(--br);color:#fff;border:0;border-radius:99px;padding:11px 18px;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.btn.o{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.a{background:#ffc65a;color:#3b2a00}.btn.g{background:var(--grn)}.btn.r{background:var(--red)}.btn.w{width:100%;margin-top:8px}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.ib:focus-visible,nav button:focus-visible{outline:2px solid var(--amb);outline-offset:2px}
+.task{cursor:pointer}.task .d{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+.ic{width:44px;height:44px;border-radius:50%;background:var(--sand);display:grid;place-items:center;font-size:20px;flex:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px}.chips button{white-space:nowrap}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:4px 0 10px}
+label{font-size:12px;font-weight:800;color:var(--mute)}
+.msg{background:var(--sand);border-radius:16px;padding:10px 12px;margin:8px 0;max-width:88%}.msg.me{margin-left:auto}.msg b{font-size:13px}
+.risk{font-size:12px;font-weight:800}.hi{color:var(--red)}.md{color:var(--amb)}.lo{color:var(--grn)}
+.bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--amb)}.bar i.o{background:var(--red)}
+.modal{position:absolute;inset:0;background:#000a;display:grid;place-items:center;padding:18px;z-index:5}.modal>div{background:var(--card);border-radius:24px;padding:20px;width:100%;max-height:90%;overflow:auto}
+#toast{position:absolute;left:16px;right:16px;bottom:78px;background:var(--ink);color:var(--cr);padding:11px 14px;border-radius:14px;z-index:9;font-size:14px}
+.login{flex:1;overflow:auto;padding:40px 22px;background:linear-gradient(#faf6f1,#f1dfc2);color:#2b1a07}
+.login .card{background:#fffd;color:#2b1a07}.logo{font:800 38px/1 "Plus Jakarta Sans";color:#3d2408;text-align:center;letter-spacing:-2px}
+.seg{display:flex;background:#f3e8d4;border-radius:16px;padding:4px;margin:14px 0}.seg button{flex:1;border:0;background:none;padding:11px;border-radius:12px;font:700 14px inherit;font-family:inherit;color:#2b1a07;cursor:pointer}.seg button.on{background:#3d2408;color:#fff}
+.login input{color:#2b1a07;background:#fff}
+#app{display:contents}
+.stage{display:grid;gap:10px;align-content:start}
+.mode{display:flex;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px}
+.mode button{flex:1;border:0;background:none;color:var(--ink);padding:9px 8px;border-radius:99px;font:700 13px inherit;font-family:inherit;cursor:pointer}
+.mode button.on{background:var(--br);color:#fff}.mode button:focus-visible{outline:2px solid var(--amb)}
+.wlogin{grid-column:1/-1;grid-row:1/-1;display:grid;grid-template-columns:1.25fr 1fr;min-height:0;overflow:auto}
+.whero{background:linear-gradient(160deg,#1b1006,#3d2408);color:#fff;padding:36px;display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.whero h1{font-size:38px;line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}.whero p{color:#e8d7bd;max-width:420px;margin:0}.whero small{letter-spacing:.12em;color:#c9b48f}
+.wlogo{width:56px;height:56px;border-radius:14px;background:#ffc65a;color:#3d2408;display:grid;place-items:center;font-weight:800;font-size:22px}
+.wright{background:var(--cr);display:grid;place-items:center;padding:20px}
+.dl{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;background:#f3e8d4;border:1px solid #e3d3b5;border-radius:14px;padding:10px 14px;font:600 13px inherit;font-family:inherit;color:#2b1a07;cursor:pointer;text-align:left}
+body.web .wrap{grid-template-columns:1fr;max-width:1180px}
+body.web .stage{order:-1}
+body.web #ph{position:relative;top:0;height:min(760px,calc(100dvh - 90px));min-height:600px;border-radius:14px;border-width:3px}
+body.web #app{display:grid;grid-template-columns:200px 1fr;grid-template-rows:auto 1fr;height:100%;min-height:0}
+body.web header{grid-column:1/3;border-radius:0}
+body.web nav{grid-column:1;grid-row:2;flex-direction:column;justify-content:flex-start;gap:4px;padding:14px 10px}
+body.web nav button{flex:none;grid-auto-flow:column;justify-content:start;font-size:14px;padding:12px 14px}
+body.web main{grid-row:2;grid-column:2;padding:22px 28px;min-height:0}
+body.web #app:not(:has(nav)) main{grid-column:1/3}
+body.web main>*{max-width:880px}
+@media(max-width:700px){.wlogin{grid-template-columns:1fr}.whero{display:none}
+body.web #app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}body.web nav{grid-column:1;grid-row:3;flex-direction:row}body.web main{grid-column:1;padding:14px 16px}body.web nav button{flex:1;grid-auto-flow:row;justify-content:center;font-size:12px;padding:8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="pitch">
+<span class="badge">AI Builder Cup 2026 · Future of Work &amp; Enterprise Productivity</span> <span class="chip">Phase 1 · Launch version</span>
+<h1>TaskPilot AI</h1>
+<p class="sub">A smart task and role management system for any team or organisation. Managers assign work faster, spot delays early and balance workload. It runs as an Android app and as a website, so everyone is covered: Android users, desktop users and iPhone users.</p>
+<h2>The problem</h2>
+<ul><li>Tasks are assigned by message or paper, then written up again by hand.</li><li>Managers find out a task is late only after the deadline has passed.</li><li>Work piles up on a few people because nobody sees the whole team's load.</li></ul>
+<h2>What the AI adds</h2>
+<div class="g3"><div><b>✨ Smart Fill</b>One sentence becomes a complete task: assignee, deadline, priority, instructions.</div><div><b>✨ Delay risk</b>Every task gets a risk label. Lists sort by what needs attention first.</div><div><b>✨ Workload balancer</b>Spots overload and reassigns a task in one tap.</div><div><b>✨ Focus &amp; chat help</b>Employees see what to do first. Chats get summaries and reply suggestions.</div></div>
+<h2>One system, every device</h2>
+<p><span class="chip">PHP Laravel REST API</span><span class="chip">Laravel Sanctum role-based access</span><span class="chip">Kotlin + Jetpack Compose (MVVM)</span><span class="chip">MySQL</span><span class="chip">Firebase FCM push</span><span class="chip">Responsive web portal (Laravel Blade, Bootstrap 5)</span><span class="chip">Gemini API (AI layer)</span></p>
+<p>One Laravel REST API powers both the native Android app and the web portal. People who do not want to install the app simply open the website on a desktop browser or an iPhone. Same account, same tasks, same AI features on every device.</p>
+<h2>Try the demo (2 minutes)</h2>
+<div class="steps">
+<button data-a="demo" data-v="1"><span>1</span>Employee view: see the AI Focus card and overdue alert</button>
+<button data-a="demo" data-v="2"><span>2</span>Open a task, use ✨ Summarize, then Submit for Admin Approval</button>
+<button data-a="demo" data-v="3"><span>3</span>Admin view: approve the submitted task</button>
+<button data-a="demo" data-v="4"><span>4</span>Create a task with AI Smart Fill</button>
+<button data-a="demo" data-v="5"><span>5</span>Admin Overview: let AI rebalance the workload</button>
+<button data-a="demo" data-v="0" style="color:var(--mute)">↺ Reset demo data</button></div>
+<h2>Phase 1 is the launch. Here is where it goes next.</h2>
+<p>This prototype is the launch version: it proves the core idea works end to end. The roadmap below is planned, and the order may change as real users give feedback.</p>
+<div class="g3">
+<div style="border-color:var(--amb);border-width:2px"><b>Phase 1 · Launch (this prototype)</b>Admin and Employee roles, task assignment, chat, attachments and approval. AI Smart Fill, delay risk, workload balancer and focus help. Android app and web portal with push notifications.</div>
+<div><b>Phase 2 · Real AI and automation</b>Gemini-powered task parsing and chat summaries. Automatic escalation and reminders for overdue work. Exportable reports (PDF and Excel).</div>
+<div><b>Phase 3 · Scale</b>Hindi and other languages. Team performance analytics. Email and calendar integration, single sign-on and audit logs. Offline mode for low-network areas.</div></div>
+<h2>Honest scope</h2>
+<p>The prototype runs on sample data. The AI logic is rule-based here and is designed to be replaced by Gemini calls on the same endpoints in Phase 2.</p>
+<p class="mute">Team Psycho_Coder · Sandip Bhandari</p>
+</section>
+<div class="stage"><div class="mode" role="group" aria-label="Platform"><button class="on" data-a="mode" data-v="app">📱 Android app</button><button data-a="mode" data-v="web">🖥 Web portal (desktop &amp; iPhone)</button></div><div id="ph"><div id="app"></div></div></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const iso=o=>new Date(Date.now()+o*864e5).toISOString().slice(0,10),now=()=>new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+let users=[{id:1,n:"Sanjay",e:"admin@taskpilot.app",role:"ADMIN",dept:"Director (HR)",des:"Director (HR)",ph:"9876500001"},{id:2,n:"dualrole",e:"dualrole@email.com",role:"BOTH",dept:"HRD",des:"Intern",ph:"5461379258"},{id:3,n:"New intern",e:"new@email.com",role:"EMPLOYEE",dept:"HRD",des:"Intern",ph:"9876500003"}];
+let depts=["Director (HR)","HRD","Finance","Safety"];
+let tasks=[
+{id:1,t:"dual testing",d:"dual testing",to:2,due:-32,p:"High",st:"Pending",file:"Testing_Requirements.pdf",chat:[{by:"Sanjay",x:"Please check the compliance guidelines for this task.",t:"10:32"}]},
+{id:2,t:"Update service records",d:"Update digital service records of Area office staff",to:2,due:2,p:"Medium",st:"In Progress",chat:[]},
+{id:3,t:"Prepare board meeting minutes",d:"Draft and circulate minutes",to:2,due:0,p:"High",st:"Pending",chat:[]},
+{id:4,t:"Quarterly leave audit",d:"Verify leave balance for Q3",to:2,due:6,p:"Low",st:"Pending",chat:[]},
+{id:5,t:"Training schedule for recruits",d:"Prepare 2-week induction plan",to:3,due:4,p:"Medium",st:"Pending",chat:[]},
+{id:6,t:"Vendor invoice verification",d:"Cross-check invoices with PO",to:2,due:3,p:"Medium",st:"Pending",chat:[]}];
+let notes=[{to:2,x:"New task assigned: dual testing",r:0},{to:1,x:"dualrole updated task #2",r:0},{to:1,x:"New intern joined HRD",r:0}];
+const SEED=JSON.stringify({users,depts,tasks,notes});
+let nid=20,S={web:0,user:null,role:"emp",tab:"home",sub:null,f:"All",q:"",modal:null,lt:"Employee",hi:1,nf:"All",summ:null,toast:""};
+const open=u=>tasks.filter(t=>t.st!=="Completed"&&(!u||t.to===u));
+const uname=id=>(users.find(u=>u.id===id)||{}).n||"?";
+function risk(t){if(t.st==="Completed")return 0;if(t.due<0)return 100;return Math.max(5,Math.min(95,70-t.due*10+open(t.to).length*8+(t.p==="High"?15:0)))}
+const rl=r=>r>=70?["High delay risk","hi"]:r>=40?["Watch","md"]:["On track","lo"];
+const cls=s=>s.replace(" ","");
+const mine=()=>S.role==="adm"?tasks:tasks.filter(t=>t.to===S.user.id);
+function toast(m){S.toast=m;draw();setTimeout(()=>{S.toast="";draw()},2600)}
+function note(to,x){notes.unshift({to,x,r:0})}
+function head(){
+ const u=S.user,unr=notes.filter(n=>n.to===u.id&&!n.r).length;
+ const tools=`${u.role==="BOTH"?'<button class="ib" data-a="swap" aria-label="Switch role">⇄</button>':""}<button class="ib" data-a="bell" aria-label="Notifications">🔔${unr?`<span class="bd">${unr}</span>`:""}</button><button class="ib" data-a="logout" aria-label="Logout">⏻</button>`;
+ if(S.role==="adm"){const t=S.tab==="team"?"Workforce Management":"Task Management";return `<header><div class="t"><b>${t}</b><small>${esc(u.n)} • Administration</small></div>${tools}</header>`}
+ return `<header><div class="av">${esc(u.n[0].toUpperCase())}</div><div class="t"><b>${esc(u.n)}</b><small>${esc(u.des)}</small></div>${tools}</header>`}
+function nav(){const t=S.role==="adm"?[["home","▦","Overview"],["tasks","✔","Tasks"],["team","👥","Team"]]:[["home","⌂","Dashboard"],["tasks","⏱","Tasks"],["prof","👤","Profile"]];
+ return `<nav>${t.map(x=>`<button data-a="tab" data-v="${x[0]}" class="${S.tab===x[0]?"on":""}"><span>${x[1]}</span>${x[2]}</button>`).join("")}</nav>`}
+function card(t){const r=risk(t),[l,c]=rl(r);
+ return `<div class="card task" data-a="open" data-v="${t.id}" tabindex="0"><div class="row"><div class="ic">📄</div><div style="flex:1;min-width:0"><b>${esc(t.t)}</b><div class="mute">${esc(t.d)}${S.role==="adm"?" · "+esc(uname(t.to)):""}</div></div><span class="pill ${cls(t.st)}">${t.st}</span></div><div class="d row sp"><span class="mute">Target Date<br><b style="color:var(--ink)">${iso(t.due)}</b></span>${t.st!=="Completed"?`<span class="risk ${c}">✨ ${l}</span>`:""}</div></div>`}
+function donut(L){const c={Completed:"#12945f","In Progress":"#2563eb",Submitted:"#7c3aed",Pending:"#d6212b"},n=L.length||1;let a=0,g=[];
+ Object.keys(c).forEach(k=>{const p=L.filter(t=>t.st===k).length/n*100;if(p){g.push(`${c[k]} ${a}% ${a+p}%`);a+=p}});
+ return `<div class="row"><div class="donut" style="background:conic-gradient(${g.join(",")||"var(--line) 0 100%"})"><i>${L.length}</i></div><div style="flex:1">${Object.keys(c).map(k=>{const m=L.filter(t=>t.st===k).length;return `<div class="row sp mute"><span><span class="dot" style="background:${c[k]}"></span>${k}</span><b style="color:var(--ink)">${m}</b></div>`}).join("")}</div></div>`}
+function empHome(){const L=mine(),o=L.filter(t=>t.st!=="Completed"),od=o.filter(t=>t.due<0),top=o.slice().sort((a,b)=>risk(b)-risk(a));
+ return `${S.hi?`<div class="card row sp"><h2 style="margin:0">Good Morning 👋</h2><button class="ib" style="color:var(--ink)" data-a="hi" aria-label="Dismiss">✕</button></div>`:""}
+ ${od[0]?`<div class="alert" data-a="open" data-v="${od[0].id}"><b>${od.length} Task Overdue</b><br>${esc(od[0].t)} needs your immediate attention</div>`:""}
+ <div class="stats"><div class="st"><b>${L.length}</b><span>Total</span></div><div class="st"><b style="color:var(--grn)">${L.filter(t=>t.st==="Completed").length}</b><span>Completed</span></div><div class="st"><b style="color:var(--blu)">${L.filter(t=>t.st==="In Progress"||t.st==="Submitted").length}</b><span>Active</span></div><div class="st"><b style="color:var(--red)">${L.filter(t=>t.st==="Pending").length}</b><span>Pending</span></div></div>
+ ${top[0]?`<div class="ai"><b>✨ AI Focus for today</b>Start with <b style="display:inline">${esc(top[0].t)}</b>. ${top[0].due<0?"It is "+(-top[0].due)+" days overdue.":"Due "+(top[0].due===0?"today":"in "+top[0].due+" days")+"."} Then: ${top.slice(1,3).map(t=>esc(t.t)).join(", ")||"nothing else pending"}.<button class="btn a" data-a="open" data-v="${top[0].id}">Open task</button></div>`:""}
+ <div class="card"><h3>Task Overview</h3>${donut(L)}</div>
+ <div class="row sp"><h2>Urgent / Pending Tasks</h2><a href="#" data-a="tab" data-v="tasks" style="color:var(--amb);font-weight:800;text-decoration:none">View All</a></div>${top.slice(0,3).map(card).join("")}`}
+function admHome(){const L=tasks,o=open(),od=o.filter(t=>t.due<0),emps=users.filter(u=>u.role!=="ADMIN"||true);
+ const load=users.map(u=>({u,n:open(u.id).length})).sort((a,b)=>b.n-a.n),hot=load[0],cold=load[load.length-1];
+ const rk=o.slice().sort((a,b)=>risk(b)-risk(a)),mv=hot.n>=3?rk.find(t=>t.to===hot.u.id&&t.st==="Pending"&&t.id!==rk[0].id)||rk.find(t=>t.to===hot.u.id&&t.st==="Pending"):null;
+ return `${S.hi?`<div class="card row"><div class="ic">🛡</div><div style="flex:1"><b style="font-size:18px">Welcome Back, ${esc(S.user.n)}!</b><div class="mute">Monitor performance and system activity.</div></div><button class="ib" style="color:var(--ink)" data-a="hi" aria-label="Dismiss">✕</button></div>`:""}
+ <div class="ai"><b>✨ AI Insights</b>${o.length} open tasks, ${o.filter(t=>risk(t)>=70).length} at high delay risk, ${od.length} overdue. ${hot.n>=3?`<b style="display:inline">${esc(hot.u.n)}</b> carries the heaviest load (${hot.n} open) while ${esc(cold.u.n)} has ${cold.n}.`:"Workload looks balanced."}${mv&&cold.u.id!==hot.u.id?`<button class="btn a" data-a="reassign" data-v="${mv.id}|${cold.u.id}">Move “${esc(mv.t)}” to ${esc(cold.u.n)}</button>`:""}</div>
+ <div class="card"><div class="row sp"><h3>Tasks Overview</h3><span class="mute">This Month</span></div>${donut(L)}</div>
+ <h2>Quick Actions</h2><div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="st task" data-a="newtask" tabindex="0"><b>➕</b><span>New Task</span></div><div class="st task" data-a="notice" tabindex="0"><b>📢</b><span>Notice</span></div><div class="st task" data-a="tab" data-v="team" tabindex="0"><b>👥</b><span>View Team</span></div></div>
+ <h2>Awaiting your approval</h2>${tasks.filter(t=>t.st==="Submitted").map(card).join("")||'<p class="mute">Nothing submitted yet.</p>'}`}
+function listHTML(){const L=mine().filter(t=>(S.f==="All"||t.st===S.f)&&(t.t+t.d).toLowerCase().includes(S.q.toLowerCase())).sort((a,b)=>risk(b)-risk(a));return L.map(card).join("")||'<p class="mute">No tasks match.</p>'}
+function tasksView(){const F=["All","Pending","In Progress","Submitted","Completed"];
+ return `${S.role==="adm"?`<div class="card" style="background:var(--br);color:#fff"><div class="row sp"><div><b style="font-size:18px">Assign New Task</b><div style="color:#e8d7bd;font-size:13px">Allocate responsibilities & set deadlines</div></div><button class="ib" style="background:var(--sand);color:var(--br);border-radius:50%;width:44px;height:44px" data-a="newtask" aria-label="New task">＋</button></div></div>`:"<h2>My Tasks</h2>"}
+ <input id="q" placeholder="🔍 Search tasks by title or content…" value="${esc(S.q)}">
+ <div class="chips">${F.map(f=>`<button class="btn ${S.f===f?"":"o"}" data-a="filt" data-v="${f}">${f}</button>`).join("")}</div>
+ <p class="mute" style="margin:0 0 8px">✨ Sorted by AI delay risk, riskiest first</p><div id="list">${listHTML()}</div>`}
+function profile(u){return `<div class="card" style="text-align:center"><div class="av" style="width:90px;height:90px;font-size:40px;margin:auto;background:var(--br);color:#fff">${esc(u.n[0].toUpperCase())}</div><h2>${esc(u.n)}</h2><b style="color:var(--amb)">${esc(u.des)}</b></div>
+ <div class="card"><h3>Profile Details</h3>${[["✉ Email",u.e],["☎ Contact",u.ph],["🏢 Department",u.dept],["📍 Branch","Headquarters"],["🆔 Employee ID",u.id+18],["💼 Designation",u.des],["🛡 Access Role",u.role==="BOTH"?"ADMIN,EMPLOYEE":u.role]].map(r=>`<div class="row sp" style="padding:8px 0;border-top:1px solid var(--line)"><span class="mute">${r[0]}</span><b style="text-align:right">${esc(r[1])}</b></div>`).join("")}</div>`}
+function team(){const q=S.q.toLowerCase();
+ return `<div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="st"><b>${users.length}</b><span>Total</span></div><div class="st"><b>${users.filter(u=>u.role==="EMPLOYEE").length}</b><span>Employee</span></div><div class="st"><b>${users.filter(u=>u.role!=="EMPLOYEE").length}</b><span>Admin / Both</span></div></div>
+ <div class="row"><button class="btn" style="flex:1" data-a="addemp">👤＋ Add Employee</button><button class="btn o" style="flex:1" data-a="adddept">🏢＋ New Dept</button></div><br>
+ <input id="q" placeholder="🔍 Search name, email or department…" value="${esc(S.q)}"><div id="list">${teamList()}</div>`}
+function teamList(){const q=S.q.toLowerCase();return users.filter(u=>(u.n+u.e+u.dept).toLowerCase().includes(q)).map(u=>{const n=open(u.id).length;return `<div class="card"><div class="row"><div class="av" style="background:var(--sand)">${esc(u.n[0].toUpperCase())}</div><div style="flex:1;min-width:0"><b>${esc(u.n)}</b><div class="mute">${esc(u.e)}</div></div><span class="pill" style="background:var(--sand)">${u.role==="BOTH"?"EMPLOYEE + ADMIN":u.role}</span></div>
+ <div class="mute" style="margin-top:8px">✨ Workload: ${n} open task${n===1?"":"s"}${n>=4?" (overloaded)":""}</div><div class="bar"><i class="${n>=4?"o":""}" style="width:${Math.min(100,n*20)}%"></i></div>
+ <div class="row sp d" style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px"><span class="mute">Department: ${esc(u.dept)}</span><a href="#" data-a="prof" data-v="${u.id}" style="font-weight:800;color:var(--ink);text-decoration:none">View Profile ›</a></div></div>`}).join("")}
+function detail(){const t=tasks.find(x=>x.id===S.sub.id),r=risk(t),[l,c]=rl(r),adm=S.role==="adm";
+ return `<header><button class="ib" data-a="back" aria-label="Back">←</button><div class="t"><b>Task Details & Discussion</b><small>ID: ${t.id} • Status: ${t.st}</small></div></header>
+ <main><div class="card"><div class="row sp"><div style="min-width:0"><b style="font-size:20px">${esc(t.t)}</b><div class="mute">${esc(t.d)}</div></div>${adm?`<span class="pill ${cls(t.st)}">${t.st}</span>`:`<select id="stsel" style="width:auto;margin:0" ${t.st==="Submitted"||t.st==="Completed"?"disabled":""}>${["Pending","In Progress"].map(s=>`<option ${t.st===s?"selected":""}>${s}</option>`).join("")}${t.st==="Submitted"||t.st==="Completed"?`<option selected>${t.st}</option>`:""}</select>`}</div>
+ <div class="row sp d" style="border-top:1px solid var(--line);margin-top:10px;padding-top:10px"><span>📅 Due: <b>${iso(t.due)}</b></span><span class="pill" style="background:var(--pink);color:var(--red)">⚑ ${t.p}</span></div>
+ <div class="row sp" style="margin-top:8px"><span class="mute">Assigned to <b style="color:var(--ink)">${esc(uname(t.to))}</b></span><span class="risk ${c}">✨ ${l} · ${r}</span></div></div>
+ <div class="mute" style="font-weight:800;margin-bottom:6px">Task Attachment / Progress Document</div>
+ <div class="card row sp">${t.file?`<span>📕 <b>${esc(t.file)}</b></span>`:'<span class="mute">📄 No file attached</span>'}<button class="btn o" data-a="attach">＋ Attach</button></div>
+ <div class="row sp"><h3 style="margin:0">2-Way Discussion</h3><span class="mute">${t.chat.length} messages</span></div>
+ <div>${t.chat.map(m=>`<div class="msg ${m.by===S.user.n?"me":""}"><b>${esc(m.by)}</b><div>${esc(m.x)}</div><div class="mute" style="font-size:11px">${m.t} ✓✓</div></div>`).join("")}</div>
+ ${S.summ?`<div class="ai"><b>✨ AI Summary</b>${esc(S.summ)}</div>`:""}
+ <div class="row" style="margin:8px 0"><button class="btn o" style="padding:8px 12px" data-a="summ">✨ Summarize</button><button class="btn o" style="padding:8px 12px" data-a="suggest">✨ Suggest reply</button></div>
+ <div class="row"><input id="msg" placeholder="Type message…" style="margin:0"><button class="btn" data-a="send" aria-label="Send">➤</button></div>
+ ${!adm&&t.st!=="Submitted"&&t.st!=="Completed"?`<button class="btn o w" data-a="submit">✔ Submit for Admin Approval</button>`:""}
+ ${adm&&t.st==="Submitted"?`<div class="row"><button class="btn g" style="flex:1" data-a="approve">Approve</button><button class="btn r" style="flex:1" data-a="reject">Send back</button></div>`:""}</main>`}
+function newTask(){return `<header><button class="ib" data-a="back" aria-label="Back">←</button><div class="t"><b>Task Management</b><small>${esc(S.user.n)} • Administration</small></div></header><main>
+ <div class="ai"><b>✨ AI Smart Fill</b>Describe the task in one line. The form fills itself.<input id="fai" placeholder="Ask dualrole to prepare the leave report by Friday, urgent" style="margin-top:8px"><button class="btn a" data-a="aifill">Fill form</button></div>
+ <div class="card"><h3>Task Information</h3><label>Task Subject / Title *</label><input id="ft" placeholder="e.g. Enter your task title">
+ <label>Target Department *</label><select id="fdp">${depts.map(d=>`<option>${esc(d)}</option>`).join("")}</select>
+ <label>Assign To Employee *</label><select id="fe">${users.map(u=>`<option value="${u.id}">${esc(u.n)}</option>`).join("")}</select>
+ <label>Target Completion Date *</label><input id="fdt" type="date" value="${iso(3)}"><label>Priority *</label><select id="fp"><option>Low</option><option selected>Medium</option><option>High</option></select>
+ <label>Directive Instructions / Description *</label><textarea id="fd" rows="4" maxlength="1000" placeholder="Enter detailed operational guidelines…"></textarea></div>
+ <button class="btn w" data-a="create">📤 Submit & Issue Task Directive</button></main>`}
+function notifs(){const L=notes.filter(n=>n.to===S.user.id&&(S.nf==="All"||!n.r));return `<header><button class="ib" data-a="back" aria-label="Back">←</button><div class="t"><b>Notifications</b></div><button class="ib" style="font-size:14px;color:#ffc65a" data-a="readall">Mark all read</button></header><main><div class="seg" style="background:var(--sand)">${["All","Unread"].map(x=>`<button class="${S.nf===x?"on":""}" style="color:${S.nf===x?"#fff":"var(--ink)"}" data-a="nf" data-v="${x}">${x}</button>`).join("")}</div>${L.map(n=>`<div class="card row"><span>${n.r?"🔔":"🔴"}</span><span>${esc(n.x)}</span></div>`).join("")||'<p class="mute" style="text-align:center">No more notifications</p>'}</main>`}
+function modal(){const m=S.modal;if(!m)return"";
+ const f={addemp:`<h2>Add New Employee</h2><input id="mn" placeholder="Full Name"><input id="me" placeholder="Email Address"><input id="mp" placeholder="Designation (e.g. Developer)"><select id="md">${depts.map(d=>`<option>${esc(d)}</option>`).join("")}</select><select id="mr"><option>EMPLOYEE</option><option>ADMIN</option><option>BOTH</option></select><button class="btn w" data-a="saveemp">Save</button>`,
+ adddept:`<h2>New Department</h2><input id="mn" placeholder="Department Name"><button class="btn w" data-a="savedept">Create</button>`,
+ notice:`<h2>Broadcast Notice / Meeting</h2><p class="mute">Send an urgent update to all team members.</p><input id="mn" placeholder="Notice Title (e.g. Emergency Meeting)"><textarea id="mm" rows="3" placeholder="Enter message details here…"></textarea><button class="btn w" data-a="sendnotice">Send Broadcast</button>`}[m];
+ return `<div class="modal" data-a="closeb"><div>${f}<button class="btn o w" data-a="close">Cancel</button></div></div>`}
+function login(){const e=S.lt==="Employee"?"dualrole@email.com":"admin@taskpilot.app";return `<div class="login"><div class="logo">TaskPilot</div><p style="text-align:center;font-weight:700;margin:4px 0 24px">Smart task &amp; role management<br><span style="font-weight:500;font-size:13px">Android app · Desktop web · iPhone web</span></p><div class="card"><h2 style="text-align:center">PORTAL LOGIN</h2><div class="seg">${["Employee","Admin"].map(x=>`<button class="${S.lt===x?"on":""}" data-a="lt" data-v="${x}">${x==="Employee"?"👤 ":"🛡 "}${x}</button>`).join("")}</div><label>Official Email ID</label><input value="${e}" aria-label="Email"><label>Password</label><input type="password" value="demo1234" aria-label="Password"><button class="btn w" data-a="login">Login</button><p class="mute" style="text-align:center">Demo build · any password works</p></div></div>`}
+function wlogin(){const e=S.lt==="Employee"?"employee@taskpilot.app":"admin@taskpilot.app";return `<div class="wlogin"><div class="whero"><div class="wlogo">TP</div><div><h1>TaskPilot Task Management System</h1><p>Assign, track and approve work from one place. Now with AI that flags delays and balances workload.</p></div><small>ASSIGN · TRACK · DELIVER</small></div>
+<div class="wright"><div class="login" style="background:none;padding:0;width:100%;max-width:420px;overflow:visible"><div class="card" style="padding:24px"><h2 style="text-align:center;font-size:22px;margin:0">TMS PORTAL LOGIN</h2><p class="mute" style="text-align:center;margin:4px 0 0">Select your authorization domain to continue</p><div class="seg">${["Employee","Admin"].map(x=>`<button class="${S.lt===x?"on":""}" data-a="lt" data-v="${x}">${x==="Employee"?"👤 ":"🛡 "}${x}</button>`).join("")}</div><label>EMAIL ADDRESS</label><input value="${e}" aria-label="Email"><label>ACCOUNT PASSWORD</label><input type="password" value="demo1234" aria-label="Password"><button class="btn w" data-a="login">Login to Portal</button><button class="dl" data-a="apk"><span style="font-size:22px">🤖</span><span style="flex:1"><b>Download Android App</b><br><span style="font-weight:500">TaskPilot mobile client</span></span>⬇</button><p class="mute" style="text-align:center;margin:12px 0 0;font-size:12px">🛡 Protected by role-based access and cyber-security policy</p></div></div></div></div>`}
+function draw(){const A=$("#app");
+ if(!S.user){A.innerHTML=S.web?wlogin():login();return}
+ let h;
+ if(S.sub){const k=S.sub.k;h=k==="task"?detail():k==="new"?newTask():k==="notif"?notifs():`<header><button class="ib" data-a="back" aria-label="Back">←</button><div class="t"><b>Profile</b></div></header><main>${profile(users.find(u=>u.id===S.sub.id))}</main>`}
+ else{const adm=S.role==="adm",b=S.tab==="home"?(adm?admHome():empHome()):S.tab==="tasks"?tasksView():S.tab==="team"?team():profile(S.user);h=head()+`<main>${b}</main>`+nav()}
+ A.innerHTML=h+modal()+(S.toast?`<div id="toast" role="status">${esc(S.toast)}</div>`:"")}
+const val=id=>($(id)||{}).value||"";
+function parse(txt){const l=txt.toLowerCase();let u=users.find(x=>l.includes(x.n.toLowerCase())||(x.n.toLowerCase().includes("intern")&&l.includes("intern")))||null,d=3,p="Medium",m;
+ if(/urgent|asap|high/.test(l))p="High";else if(/\blow\b/.test(l))p="Low";
+ if(/today/.test(l))d=0;else if(/tomorrow/.test(l))d=1;else if(m=l.match(/in (\d+) days?/))d=+m[1];else if(/next week/.test(l))d=7;else{const i=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"].findIndex(x=>l.includes(x));if(i>=0)d=(i-new Date().getDay()+7)%7||7}
+ let t=txt.replace(/^(ask|tell|assign)\s+[\w ]+?\s+to\s+/i,"").replace(/\b(by|due|before)\s+\w+( week)?|\b(today|tomorrow|next week|in \d+ days?)\b|\b(urgent|asap)\b|,?\s*(high|low|medium)\s*priority/gi,"").replace(/[,.\s]+$/,"").trim()||txt;
+ return{u,d,p,t:t[0].toUpperCase()+t.slice(1)}}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el)return;const a=el.dataset.a,v=el.dataset.v;
+ if(a==="closeb"&&e.target!==el)return;if(a==="prof"||a==="tab"&&el.tagName==="A")e.preventDefault();
+ const T=()=>tasks.find(t=>t.id===S.sub.id);
+ switch(a){
+ case"demo":{const n=+v;if(n===0||!S.user&&n){const o=JSON.parse(SEED);users=o.users;depts=o.depts;tasks=o.tasks;notes=o.notes}
+  const go=(u,r,t,sub)=>{S.user=users[u];S.role=r;S.tab=t;S.sub=sub||null;S.hi=0;S.modal=null;S.summ=null;S.q="";S.f="All"};
+  if(n===0){S.user=null;S.sub=null;S.hi=1;S.lt="Employee"}
+  if(n===1)go(1,"emp","home");
+  if(n===2)go(1,"emp","home",{k:"task",id:3});
+  if(n===3)go(1,"adm","home");
+  if(n===4){go(1,"adm","home",{k:"new"});draw();$("#fai").value="Ask New intern to update the training attendance sheet by Friday, urgent";$("#ph").scrollIntoView({block:"nearest"});return}
+  if(n===5)go(1,"adm","home");
+  draw();$("#ph").scrollIntoView({block:"nearest"});return}
+ case"mode":S.web=v==="web";S.user=null;S.sub=null;S.modal=null;document.body.classList.toggle("web",S.web);document.querySelectorAll(".mode button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));break;
+ case"apk":toast("Android APK download link goes here");return;
+ case"lt":S.lt=v;break;
+ case"login":S.user=S.lt==="Employee"?users[1]:users[0];S.role=S.lt==="Employee"?"emp":"adm";S.tab="home";S.hi=1;break;
+ case"logout":S.user=null;S.sub=null;break;
+ case"swap":S.role=S.role==="adm"?"emp":"adm";S.tab="home";S.sub=null;toast("Switched to "+(S.role==="adm"?"Admin":"Employee")+" view");return;
+ case"tab":S.tab=v;S.sub=null;S.q="";S.f="All";break;
+ case"open":S.sub={k:"task",id:+v};S.summ=null;break;
+ case"back":S.sub=null;S.summ=null;break;
+ case"bell":S.sub={k:"notif"};break;
+ case"readall":notes.forEach(n=>{if(n.to===S.user.id)n.r=1});break;
+ case"nf":S.nf=v;break;
+ case"filt":S.f=v;break;
+ case"hi":S.hi=0;break;
+ case"newtask":S.sub={k:"new"};break;
+ case"prof":S.sub={k:"prof",id:+v};break;
+ case"aifill":{const r=parse(val("#fai"));if(!val("#fai").trim())return;$("#ft").value=r.t;$("#fd").value="Directive: "+val("#fai").trim();$("#fdt").value=iso(r.d);$("#fp").value=r.p;if(r.u){$("#fe").value=r.u.id;$("#fdp").value=r.u.dept}toast("Form filled by AI. Review and submit.");return}
+ case"create":{const t=val("#ft").trim(),d=val("#fd").trim();if(!t||!d){toast("Title and description are required");return}
+  const off=Math.round((new Date(val("#fdt"))-new Date(iso(0)))/864e5);tasks.push({id:nid++,t,d,to:+val("#fe"),due:off,p:val("#fp"),st:"Pending",chat:[]});note(+val("#fe"),"New task assigned: "+t);S.sub=null;S.tab="tasks";toast("Task issued. Push notification sent to "+uname(+val("#fe")));return}
+ case"notice":S.modal="notice";break;case"addemp":S.modal="addemp";break;case"adddept":S.modal="adddept";break;case"close":case"closeb":S.modal=null;break;
+ case"sendnotice":{if(!val("#mn").trim())return;users.forEach(u=>note(u.id,"📢 "+val("#mn").trim()));S.modal=null;toast("Broadcast sent to "+users.length+" members");return}
+ case"saveemp":{if(!val("#mn").trim()||!val("#me").trim()){toast("Name and email are required");return}users.push({id:users.length+1,n:val("#mn").trim(),e:val("#me").trim(),role:val("#mr"),dept:val("#md"),des:val("#mp")||"Employee",ph:"—"});S.modal=null;toast("Employee added");return}
+ case"savedept":{if(val("#mn").trim()){depts.push(val("#mn").trim());S.modal=null;toast("Department created");return}return}
+ case"send":{const x=val("#msg").trim();if(!x)return;T().chat.push({by:S.user.n,x,t:now()});const o=S.role==="adm"?T().to:1;note(o,S.user.n+" replied on "+T().t);break}
+ case"attach":T().file="Progress_Report.pdf";toast("File attached");return;
+ case"summ":{const c=T().chat;S.summ=c.length?`${c.length} message${c.length>1?"s":""} so far. Last from ${c[c.length-1].by}: “${c[c.length-1].x.slice(0,70)}”. Status: ${T().st}. ${risk(T())>=70?"Needs action soon.":"No blockers raised."}`:"No discussion yet. Start by confirming the deadline and scope.";break}
+ case"suggest":{const t=T();draw();$("#msg").value=S.role==="adm"?`Please share a progress update on "${t.t}". It is due ${iso(t.due)}.`:t.due<0?`Sorry for the delay on "${t.t}". I will submit it by end of day.`:`Working on "${t.t}". I will submit it before ${iso(t.due)}.`;return}
+ case"submit":{const t=T();t.st="Submitted";note(1,S.user.n+" submitted “"+t.t+"” for approval");toast("Submitted for admin approval");break}
+ case"approve":{const t=T();t.st="Completed";note(t.to,"Approved: "+t.t);toast("Task approved");break}
+ case"reject":{const t=T();t.st="In Progress";note(t.to,"Sent back for changes: "+t.t);toast("Sent back to employee");break}
+ case"reassign":{const[i,u]=v.split("|"),t=tasks.find(x=>x.id==i);t.to=+u;note(+u,"Task reassigned to you: "+t.t);toast("Reassigned. Push sent to "+uname(+u));return}}
+ draw()});
+document.addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;$("#list").innerHTML=S.tab==="team"?teamList():listHTML()}});
+document.addEventListener("change",e=>{if(e.target.id==="stsel"){const t=tasks.find(x=>x.id===S.sub.id);t.st=e.target.value;note(1,S.user.n+" updated “"+t.t+"” to "+t.st);toast("Status updated")}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.a)e.target.click()});
+draw();
+</script>
+</body>
+</html>
